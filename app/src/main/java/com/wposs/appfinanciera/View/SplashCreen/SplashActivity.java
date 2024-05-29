@@ -8,6 +8,8 @@ import com.wposs.appfinanciera.DataAcccess.SharedPreferences.SessionManager;
 import com.wposs.appfinanciera.View.HomeActivity.Implementations.MainActivity;
 import com.wposs.appfinanciera.View.LoginActivity.Implementations.LoginActivity;
 import com.wposs.appfinanciera.R;
+import com.wposs.appfinanciera.View.TransfersActivity.Implementations.TransferActivity;
+
 import android.os.Handler;
 
 @SuppressLint("CustomSplashScreen")
@@ -33,7 +35,7 @@ public class SplashActivity extends App {
                 // valido la sesión del usuario
                 SessionManager sessionManager = new SessionManager(getApplicationContext());
                 if (sessionManager.isLoggedIn()) {
-                    changeActivity(MainActivity.class);
+                    changeActivity(TransferActivity.class);
                 } else {
                     changeActivity(LoginActivity.class);
                 }

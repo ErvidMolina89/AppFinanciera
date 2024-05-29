@@ -43,4 +43,10 @@
     <string name="descripcion">Descripción:</string>
     <string name="no_tienen_descripcion">No tienen descripción</string>
     <string name="celular_transaccion">Celular Transacción:</string>
+    <string name="transferir_dinero">Transferir Dinero</string>
+    <string name="cantidad">Cantidad</string>
+    <string name="mensaje">Mensaje</string>
+    <string name="cantidad_disponible">Cantidad Disponible</string>
+    <string name="enviar_dinero">Enviar Dinero</string>
+    <string name="seleccione_el_numero_a_transferir">Seleccione el numero a transferir</string>
 </resources>

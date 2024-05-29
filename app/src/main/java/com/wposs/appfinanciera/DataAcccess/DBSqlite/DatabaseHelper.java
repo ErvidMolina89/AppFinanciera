@@ -7,8 +7,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.wposs.appfinanciera.DataAcccess.SharedPreferences.SessionManager;
 import com.wposs.appfinanciera.Models.Transaction;
 import com.wposs.appfinanciera.Models.UserModel;
+import com.wposs.appfinanciera.Utils.PhoneNumberExistsException;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
     private static final String DATABASE_NAME = "dbFinance.db";
@@ -30,18 +38,20 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
     // Transactions table
     private static final String TABLE_TRANSACTIONS = "transactions";
     private static final String COLUMN_TRANSACTION_ID = "id";
-    private static final String COLUMN_TRANSACTION_TYPE = "type";
     private static final String COLUMN_DESCRIPTION = "description";
     private static final String COLUMN_VALUE = "value";
     private static final String COLUMN_DATE = "date";
     private static final String COLUMN_USER_ID_FK = "user_id";
+    private static final String COLUMN_FROM_USER_ID = "from_user_id";
+    private final Context context;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
+     public void onCreate(SQLiteDatabase db) {
         this.db = db;
         // Create Users table
         createTableUsers(db);
@@ -67,12 +77,14 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
     private void createTableTransactions(SQLiteDatabase db){
         String CREATE_TRANSACTIONS_TABLE = "CREATE TABLE " + TABLE_TRANSACTIONS + " (" +
                 COLUMN_TRANSACTION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COLUMN_TRANSACTION_TYPE + " INTEGER, " +
                 COLUMN_DESCRIPTION + " TEXT, " +
                 COLUMN_VALUE + " REAL, " +
                 COLUMN_DATE + " TEXT, " +
+                COLUMN_FROM_USER_ID + " INTEGER, " +
                 COLUMN_USER_ID_FK + " INTEGER, " +
-                "FOREIGN KEY(" + COLUMN_USER_ID_FK + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + "))";
+                "FOREIGN KEY(" + COLUMN_FROM_USER_ID + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + ")," +
+                "FOREIGN KEY(" + COLUMN_USER_ID_FK + ") REFERENCES " + TABLE_USERS + "(" + COLUMN_USER_ID + ")" +
+                ")";
         db.execSQL(CREATE_TRANSACTIONS_TABLE);
     }
 
@@ -121,8 +133,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
     }
 
     //registrar Usuario
-    public boolean registerUser(UserModel user) {
+    public boolean registerUser(UserModel user) throws PhoneNumberExistsException {
         try (SQLiteDatabase db = this.getWritableDatabase()) {
+            if (isPhoneNumberExists(db, user.getPhone())) {
+                throw new PhoneNumberExistsException("El número de teléfono ya está registrado.");
+            }
+
             ContentValues values = new ContentValues();
             values.put(COLUMN_NAME, user.getName());
             values.put(COLUMN_EMAIL, user.getEmail());
@@ -134,6 +150,30 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
             long result = db.insert(TABLE_USERS, null, values);
             return result != -1;
         }
+    }
+
+    private boolean isPhoneNumberExists(SQLiteDatabase db, String phoneNumber) {
+        String query = "SELECT 1 FROM " + TABLE_USERS + " WHERE " + COLUMN_PHONE + " = ?";
+        try (Cursor cursor = db.rawQuery(query, new String[]{phoneNumber})) {
+            return cursor.moveToFirst(); // Si se mueve al primer resultado, el teléfono existe
+        }
+    }
+    public List<String> getAllPhoneNumbers() {
+        List<String> phoneNumbers = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + COLUMN_PHONE + " FROM " + TABLE_USERS, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") String phoneNumber = cursor.getString(cursor.getColumnIndex(COLUMN_PHONE));
+                phoneNumbers.add(phoneNumber);
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+
+        db.close();
+        return phoneNumbers;
     }
 
     @SuppressLint("Range")
@@ -157,20 +197,86 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
             }
         }
     }
+    @SuppressLint("Range")
+    public double getUserAmount(int loggedInUserId) {
+        double amount = 0;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT " + COLUMN_AMOUNT + " FROM " + TABLE_USERS + " WHERE " + COLUMN_USER_ID + " = ?", new String[]{String.valueOf(loggedInUserId)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            amount = cursor.getDouble(cursor.getColumnIndex(COLUMN_AMOUNT));
+            cursor.close();
+        }
+
+        db.close();
+        return amount;
+    }
+    public boolean sendMoney(int userId, String toPhone, double amount, String mess) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            // Obtener datos del remitente
+            Cursor cursor = db.query(TABLE_USERS, new String[]{COLUMN_AMOUNT}, COLUMN_USER_ID + "=?",
+                    new String[]{String.valueOf(userId)}, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                @SuppressLint("Range") double fromBalance = cursor.getDouble(cursor.getColumnIndex(COLUMN_AMOUNT));
+                cursor.close();
+
+                // Obtener datos del receptor
+                cursor = db.query(TABLE_USERS, new String[]{COLUMN_USER_ID, COLUMN_AMOUNT, COLUMN_NAME, COLUMN_PHONE}, COLUMN_PHONE + "=?",
+                        new String[]{toPhone}, null, null, null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    @SuppressLint("Range") int toUserId = cursor.getInt(cursor.getColumnIndex(COLUMN_USER_ID));
+                    @SuppressLint("Range") double toBalance = cursor.getDouble(cursor.getColumnIndex(COLUMN_AMOUNT));
+                    cursor.close();
+
+                    // Realizar la transferencia
+                    fromBalance -= amount;
+                    toBalance += amount;
+
+                    SessionManager sessionManager = new SessionManager(context);
+                    sessionManager.saveUserAmount(fromBalance);
+
+                    ContentValues fromValues = new ContentValues();
+                    fromValues.put(COLUMN_AMOUNT, fromBalance);
+                    db.update(TABLE_USERS, fromValues, COLUMN_USER_ID + "=?", new String[]{String.valueOf(userId)});
+
+                    ContentValues toValues = new ContentValues();
+                    toValues.put(COLUMN_AMOUNT, toBalance);
+                    db.update(TABLE_USERS, toValues, COLUMN_USER_ID + "=?", new String[]{String.valueOf(toUserId)});
+
+                    long currentTime = System.currentTimeMillis();
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+                    String date = sdf.format(new Date(currentTime));
+                    insertTransaction(db, mess, roundAmount(amount), date, userId, toUserId);
+
+                    // Commit transaction
+                    db.setTransactionSuccessful();
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
+            db.close();
+        }
+        return false;
+    }
 
     // Insert a transaction
-    public boolean insertTransaction(Transaction transaction) {
-        try (SQLiteDatabase db = this.getWritableDatabase()) {
-            ContentValues values = new ContentValues();
-            values.put(COLUMN_TRANSACTION_TYPE, transaction.getType());
-            values.put(COLUMN_DESCRIPTION, transaction.getDescription());
-            values.put(COLUMN_VALUE, transaction.getAmount());
-            values.put(COLUMN_DATE, transaction.getDate());
-            values.put(COLUMN_USER_ID_FK, transaction.getUserId());
+    public boolean insertTransaction(SQLiteDatabase db, String description, double amount, String date, int userId, int fromUserId) {
 
-            long result = db.insert(TABLE_TRANSACTIONS, null, values);
-            return result != -1;
-        }
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_DESCRIPTION, description);
+        values.put(COLUMN_VALUE, amount);
+        values.put(COLUMN_DATE, date);
+        values.put(COLUMN_USER_ID_FK, userId);
+        values.put(COLUMN_FROM_USER_ID, fromUserId);
+
+        long result = db.insert(TABLE_TRANSACTIONS, null, values);
+        return result != -1;
     }
 
     @Override
@@ -178,5 +284,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
         if (db != null && db.isOpen()) {
             db.close();
         }
+    }
+
+    private double roundAmount(double amount) {
+        return Math.round(amount / 100.0) * 100.0;
     }
 }

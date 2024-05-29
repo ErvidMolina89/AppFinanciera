@@ -23,7 +23,7 @@ public class LoginBL implements ILoginBL {
     public void login(String phone, String password) {
         UserModel user = db.loginUser(phone, password);
         if (user != null) {
-            sessionManager.createLoginSession(user.getAmount(), user.getName(), user.getId());
+            sessionManager.createLoginSession(user.getAmount(), user.getName(), user.getPhone(), user.getId());
             listener.showLoginSuccess();
         } else {
             listener.showLoginError("Credenciales incorrectas");

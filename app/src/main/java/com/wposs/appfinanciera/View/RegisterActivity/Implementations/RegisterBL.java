@@ -4,12 +4,13 @@ import android.content.Context;
 
 import com.wposs.appfinanciera.DataAcccess.DBSqlite.DatabaseHelper;
 import com.wposs.appfinanciera.Models.UserModel;
+import com.wposs.appfinanciera.Utils.PhoneNumberExistsException;
 import com.wposs.appfinanciera.View.RegisterActivity.Interfaces.IRegisterBL;
 import com.wposs.appfinanciera.View.RegisterActivity.Interfaces.RegisterListener;
 
 public class RegisterBL implements IRegisterBL {
-    private DatabaseHelper db;
-    private RegisterListener listener;
+    private final DatabaseHelper db;
+    private final RegisterListener listener;
 
     public RegisterBL(RegisterListener listener, Context context){
         this.listener = listener;
@@ -18,8 +19,15 @@ public class RegisterBL implements IRegisterBL {
 
     @Override
     public void registerUser(UserModel user) {
-        if (db.registerUser(user)) { listener.showRegisterSuccess();
-        } else { listener.showRegisterError("Error al registrar usuario");
+        try {
+            boolean isRegistered = db.registerUser(user);
+            if (isRegistered) {
+                listener.showRegisterSuccess();
+            } else {
+                listener.showRegisterError("Error al registrar usuario");
+            }
+        } catch (PhoneNumberExistsException e) {
+            listener.showRegisterError(e.getMessage());
         }
     }
 }

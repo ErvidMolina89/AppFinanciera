@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/_16dp"
+    tools:context=".View.TransfersActivity.Implementations.TransferActivity">
+
+    <TextView
+        android:id="@+id/tvBalance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/transferir_dinero"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/_40sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/seleccione_el_numero_a_transferir"
+        android:layout_marginTop="@dimen/_24dp"
+        android:textSize="@dimen/_16sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorGrayText"/>
+
+    <Spinner
+        android:id="@+id/spnPhoneTransfer"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_65dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/spinner_border" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textField_AmountTransfer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/cantidad"
+        android:layout_marginTop="@dimen/_16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etAmountTransfer"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_65dp"
+            android:inputType="numberDecimal"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textField_mess"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/mensaje"
+        android:layout_marginTop="@dimen/_16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etMess"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_65dp"
+            android:inputType="textMultiLine|text"
+            android:gravity="top"
+            android:lines="4"
+            android:maxLines="6"
+            android:minLines="4"
+            android:scrollHorizontally="false"
+            android:scrollbars="vertical"
+            android:overScrollMode="always"
+            android:imeOptions="actionDone"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/titleAvailableTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/cantidad_disponible"
+        android:layout_marginTop="@dimen/_24dp"
+        android:textSize="@dimen/_16sp"
+        android:textStyle="bold"
+        android:textColor="@color/colorGrayText"/>
+
+    <TextView
+        android:id="@+id/amountAvailableTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/_0_00"
+        android:layout_marginTop="@dimen/_4dp"
+        android:textSize="@dimen/_18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleDescriptionTextView" />
+
+    <Button
+        android:id="@+id/btnSend"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_60dp"
+        android:layout_marginTop="@dimen/_34dp"
+        android:backgroundTint="@color/colorAccent"
+        android:textStyle="bold"
+        android:textSize="@dimen/_20sp"
+        android:textColor="@color/white"
+        android:text="@string/enviar_dinero"/>
+
+</LinearLayout>

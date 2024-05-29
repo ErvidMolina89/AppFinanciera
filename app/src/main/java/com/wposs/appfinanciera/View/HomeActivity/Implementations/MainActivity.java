@@ -46,21 +46,21 @@ public class MainActivity extends App {
         if (getSupportActionBar() != null) {getSupportActionBar().setTitle("Bienvenido: " + user.getName());}
 
         // Set initial account balance
-        accountBalanceTextView.setText(String.format("Balance: $%,.2f", INITIAL_BALANCE));
+        accountBalanceTextView.setText(String.format("Balance: $%,.2f", user.getAmount()));
 
         callRecyclerView();
-        loadDummyTransactions();
+//        loadDummyTransactions();
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private void loadDummyTransactions() {
-        // Add some dummy transactions to the list
-        transactionList.add(new Transaction("Compra en supermercado", 50000, "29/05/2024 10:30:00", 1));
-        transactionList.add(new Transaction("Pago de servicios", 200000, "29/05/2024 12:30:00",1));
-        transactionList.add(new Transaction("Depósito", 100000, "29/05/2024 10:40:00",2));
-
-        transactionsAdapter.updateList(transactionList);
-    }
+//    @SuppressLint("NotifyDataSetChanged")
+//    private void loadDummyTransactions() {
+//        // Add some dummy transactions to the list
+//        transactionList.add(new Transaction("Compra en supermercado", 50000, "29/05/2024 10:30:00", 1));
+//        transactionList.add(new Transaction("Pago de servicios", 200000, "29/05/2024 12:30:00",1));
+//        transactionList.add(new Transaction("Depósito", 100000, "29/05/2024 10:40:00",2));
+//
+//        transactionsAdapter.updateList(transactionList);
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

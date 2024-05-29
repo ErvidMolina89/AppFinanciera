@@ -10,14 +10,11 @@ public class Transaction implements Parcelable {
     private double amount;
     private String date;
     private int userId;
+    private int fromUserId;
     private String nameUserTransaction;
     private String phoneTransaction;
 
-    public Transaction(String description, double amount, String date, int type) {
-        this.description = description;
-        this.amount = amount;
-        this.date = date;
-        this.type = type;
+    public Transaction() {
     }
 
     public int getId() {
@@ -72,8 +69,12 @@ public class Transaction implements Parcelable {
         return nameUserTransaction;
     }
 
-    public void setNameUserTransaction(String nameUserTransaction) {
-        this.nameUserTransaction = nameUserTransaction;
+    public int getFromUserId() {
+        return fromUserId;
+    }
+
+    public void setFromUserId(int fromUserId) {
+        this.fromUserId = fromUserId;
     }
 
     public String getPhoneTransaction() {
@@ -92,6 +93,7 @@ public class Transaction implements Parcelable {
         amount = in.readDouble();
         date = in.readString();
         userId = in.readInt();
+        fromUserId = in.readInt();
         nameUserTransaction = in.readString();
         phoneTransaction = in.readString();
     }
@@ -122,6 +124,7 @@ public class Transaction implements Parcelable {
         dest.writeDouble(amount);
         dest.writeString(date);
         dest.writeInt(userId);
+        dest.writeInt(fromUserId);
         dest.writeString(nameUserTransaction);
         dest.writeString(phoneTransaction);
     }
