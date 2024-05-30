@@ -15,8 +15,6 @@ public class LoginActivity extends App {
 
     private LoginPresenter presenter;
     private EditText phoneEditText, passwordEditText;
-    private TextView newAccount;
-    private Button loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +24,8 @@ public class LoginActivity extends App {
         presenter = new LoginPresenter(new listenerLoginView(), this);
         phoneEditText = findViewById(R.id.phoneEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
-        newAccount = findViewById(R.id.text_new_account);
-        loginButton = findViewById(R.id.button_Longin);
+        TextView newAccount = findViewById(R.id.text_new_account);
+        Button loginButton = findViewById(R.id.button_Longin);
 
         loginButton.setOnClickListener(view -> {
             String phone = phoneEditText.getText().toString();

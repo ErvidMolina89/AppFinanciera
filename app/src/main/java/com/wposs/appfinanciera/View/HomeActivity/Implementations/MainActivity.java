@@ -56,10 +56,10 @@ public class MainActivity extends App {
         if (!sessionManager.isLoggedIn()) changeActivity(LoginActivity.class);
         UserModel user = sessionManager.getUserDetails();
         // Establecer el título y el icono
-        if (getSupportActionBar() != null) {getSupportActionBar().setTitle("Bienvenido: " + user.getName());}
+        if (getSupportActionBar() != null) {getSupportActionBar().setTitle(getString(R.string.bienvenido) + user.getName());}
 
         // Set initial account balance
-        accountBalanceTextView.setText(String.format("Balance: $%,.2f", user.getAmount()));
+        accountBalanceTextView.setText(String.format(getString(R.string.balance_2f), user.getAmount()));
     }
 
     @Override
@@ -75,7 +75,7 @@ public class MainActivity extends App {
         int id = item.getItemId();
         if (id == R.id.action_logout) {
             // Manejar la acción de logout aquí
-            Toast.makeText(this, "Logout seleccionado", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), R.string.logout_seleccionado, Toast.LENGTH_SHORT).show();
             sessionManager.logout();
             changeActivity(LoginActivity.class);
             return true;
@@ -117,7 +117,6 @@ public class MainActivity extends App {
 
         @Override
         public void onPressTransaction(Transaction transaction) {
-            Toast.makeText(getApplicationContext(), "Transacción seleccionada: "+transaction.getAmount(), Toast.LENGTH_SHORT).show();
             changeActivityPutExtra(MovementDetailActivity.class, transaction);
         }
     }

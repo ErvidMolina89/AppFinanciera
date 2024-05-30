@@ -49,16 +49,14 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
-
     @Override
-     public void onCreate(SQLiteDatabase db) {
+    public void onCreate(SQLiteDatabase db) {
         this.db = db;
         // Create Users table
         createTableUsers(db);
         // Create Transactions table
         createTableTransactions(db);
     }
-
     private void createTableUsers(SQLiteDatabase db){
         String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS + " (" +
                 COLUMN_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -73,7 +71,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
         // Insert default users with balance
         insertDefaultUsers(db);
     }
-
     private void createTableTransactions(SQLiteDatabase db){
         String CREATE_TRANSACTIONS_TABLE = "CREATE TABLE " + TABLE_TRANSACTIONS + " (" +
                 COLUMN_TRANSACTION_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -87,13 +84,11 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
                 ")";
         db.execSQL(CREATE_TRANSACTIONS_TABLE);
     }
-
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS users");
         onCreate(db);
     }
-
     private void insertDefaultUsers(SQLiteDatabase db) {
         UserModel user = new UserModel();
         user.setName("Thiago Molina");
@@ -120,7 +115,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
         user.setAmount(3000000.0);
         insertUser(db, user);
     }
-
     private void insertUser(SQLiteDatabase db, UserModel user) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAME, user.getName());
@@ -131,7 +125,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
         values.put(COLUMN_AMOUNT, user.getAmount());  // Insert the double value
         db.insert(TABLE_USERS, null, values);
     }
-
     public boolean registerUser(UserModel user) throws PhoneNumberExistsException {
         try (SQLiteDatabase db = this.getWritableDatabase()) {
             if (isPhoneNumberExists(db, user.getPhone())) {
@@ -150,7 +143,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
             return result != -1;
         }
     }
-
     private boolean isPhoneNumberExists(SQLiteDatabase db, String phoneNumber) {
         String query = "SELECT 1 FROM " + TABLE_USERS + " WHERE " + COLUMN_PHONE + " = ?";
         try (Cursor cursor = db.rawQuery(query, new String[]{phoneNumber})) {
@@ -174,7 +166,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
         db.close();
         return phoneNumbers;
     }
-
     @SuppressLint("Range")
     public UserModel loginUser(String phone, String password) {
         try (SQLiteDatabase db = this.getReadableDatabase()) {
@@ -253,24 +244,20 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
         }
         return false;
     }
-
     private void updateAmountUsers(SQLiteDatabase db, Double amountUpdate, int userId){
         ContentValues toValues = new ContentValues();
         toValues.put(COLUMN_AMOUNT, amountUpdate);
         db.update(TABLE_USERS, toValues, COLUMN_USER_ID + "=?", new String[]{String.valueOf(userId)});
     }
-
     private void sesionAmount(Double amount){
         SessionManager sessionManager = new SessionManager(context);
         sessionManager.saveUserAmount(amount);
     }
-
     private String dateTransaction(){
         long currentTime = System.currentTimeMillis();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
         return sdf.format(new Date(currentTime));
     }
-
     public boolean insertTransaction(SQLiteDatabase db, String description, double amount, String date, int userId, int fromUserId) {
 
         ContentValues values = new ContentValues();
@@ -283,7 +270,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
         long result = db.insert(TABLE_TRANSACTIONS, null, values);
         return result != -1;
     }
-
     public List<Transaction> getUserTransactions(int userId) {
         List<Transaction> transactionList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -322,7 +308,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
                 "WHERE t.from_user_id = ? OR t.user_id = ? " +
                 "ORDER BY t.date DESC";
     }
-
     @SuppressLint("Range")
     private Transaction fillTransactionModel(Cursor cursor){
         Transaction transaction = new Transaction();
@@ -339,15 +324,10 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
         transaction.setType(cursor.getInt(cursor.getColumnIndex("type")));
         return transaction;
     }
-
     @Override
     public synchronized void close() {
         if (db != null && db.isOpen()) {
             db.close();
         }
-    }
-
-    private double roundAmount(double amount) {
-        return Math.round(amount / 100.0) * 100.0;
     }
 }

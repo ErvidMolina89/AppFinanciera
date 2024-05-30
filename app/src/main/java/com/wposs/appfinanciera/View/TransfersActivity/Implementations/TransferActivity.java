@@ -81,12 +81,12 @@ public class TransferActivity extends App {
             @Override
             public void afterTextChanged(Editable s) {
                 String input = s.toString().trim();
-                if((input.isEmpty()) || (input.equals("0"))) {
-                    tfAmountTransfer.setError("El campo no puede estar vacío o ser cero");
+                if(input.isEmpty() || input.equals("0") || Double.parseDouble(input) <= 500 ) {
+                    tfAmountTransfer.setError(getString(R.string.error_monto_500));
                 }else {
                     btnSend.setEnabled((Double.parseDouble(input.toString()) <= amountDeposit));
                     btnSend.setBackgroundTintList(ColorStateList.valueOf((Double.parseDouble(input.toString()) <= amountDeposit) ? getResources().getColor(R.color.colorAccent):getResources().getColor(R.color.colorGrayText)));
-                    tfAmountTransfer.setError(!(Double.parseDouble(input.toString()) <= amountDeposit) ? "No cuenta con la cantidad suficiente" : null);
+                    tfAmountTransfer.setError(!(Double.parseDouble(input.toString()) <= amountDeposit) ? getString(R.string.cantidad_insuficiente) : null);
                 }
             }
         });
@@ -116,8 +116,6 @@ public class TransferActivity extends App {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItem = parent.getItemAtPosition(position).toString();
-                // Mostrar el elemento seleccionado
-                Toast.makeText(getApplicationContext(), "Selected: " + selectedItem, Toast.LENGTH_SHORT).show();
                 transaction.setFromUserPhone(selectedItem);
             }
 

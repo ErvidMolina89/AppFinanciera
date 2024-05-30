@@ -15,7 +15,7 @@ import com.wposs.appfinanciera.Utils.DateUtils;
 
 public class MovementDetailActivity extends App {
     private TextView userTextView, sentToTextView, amountTextView, dateTextView, descriptionTextView, phoneToTextView;
-    private ImageView imageViewDetail, imageViewReturn;
+    private ImageView imageViewDetail;
     private Transaction transaction;
 
     @SuppressLint("MissingInflatedId")
@@ -26,7 +26,7 @@ public class MovementDetailActivity extends App {
 
         userTextView = findViewById(R.id.userDetailTextView);
         imageViewDetail = findViewById(R.id.imageViewDetail);
-        imageViewReturn = findViewById(R.id.imageViewReturnDeatil);
+        ImageView imageViewReturn = findViewById(R.id.imageViewReturnDeatil);
         amountTextView = findViewById(R.id.amountTextView);
         sentToTextView = findViewById(R.id.sentToTextView);
         amountTextView = findViewById(R.id.amountTextView);
@@ -50,7 +50,7 @@ public class MovementDetailActivity extends App {
 
     private void completeTransactionData(){
         if (transaction != null) {
-            userTextView.setText(transaction.getType() == 1 ? "Traslado Dinero" : "Resección Dinero");
+            userTextView.setText(transaction.getType() == 1 ? getString(R.string.traslado_dinero) : getString(R.string.resecci_n_dinero));
             userTextView.setTextColor(transaction.getType() == 1 ? getResources().getColor(R.color.red) : getResources().getColor(R.color.colorAccent));
             imageViewDetail.setColorFilter(transaction.getType() == 1 ? getResources().getColor(R.color.red) : getResources().getColor(R.color.colorAccent));
             sentToTextView.setText((transaction.getType() == 1)?transaction.getFromUserName():transaction.getToUserName());
@@ -58,6 +58,6 @@ public class MovementDetailActivity extends App {
             amountTextView.setText(String.valueOf(transaction.getAmount()));
             dateTextView.setText(DateUtils.formatDateString(transaction.getDate(), DateFormatType.FORMAT_2));
             descriptionTextView.setText(transaction.getDescription());
-        }else showErrorDialog("Error al vizualizar información");
+        }else showErrorDialog(getString(R.string.error_al_vizualizar_informacion));
     }
 }

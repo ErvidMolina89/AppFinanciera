@@ -74,9 +74,7 @@ public class RegisterActivity extends App {
     private void validateEmailFormat(){
         emailEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //Toast.makeText(getApplicationContext(), "Before", Toast.LENGTH_SHORT).show();
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
@@ -87,7 +85,7 @@ public class RegisterActivity extends App {
                 if (isValidEmail(email)) {
                     textFieldEmail.setError(null);
                 } else {
-                    textFieldEmail.setError("Formato de correo electrónico inválido");
+                    textFieldEmail.setError(getString(R.string.error_correo_formato));
                 }
             }
         });
@@ -113,7 +111,7 @@ public class RegisterActivity extends App {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!passEditText.getText().toString().equals(s.toString())){
-                    textFieldConfirmPass.setError("Las contraseñas no coinciden.");
+                    textFieldConfirmPass.setError(getString(R.string.error_pass_coinciden));
                 }else {
                     textFieldConfirmPass.setError(null);
                 }
@@ -132,21 +130,17 @@ public class RegisterActivity extends App {
     private void validatePhoneNumberCharacters(){
         phoneEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() < 10) {
-                    textFieldPhone.setError("Cantidad insuficiente de caracteres");
+                    textFieldPhone.setError(getString(R.string.insuficiente_caracteres));
                 } else {
-                    textFieldPhone.setError(null); // Elimina el mensaje de error
+                    textFieldPhone.setError(null);
                 }
             }
         });
@@ -155,19 +149,15 @@ public class RegisterActivity extends App {
     private void validateIdentificationNumberCharacters(){
         cedulaEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {
                 if (!(s.length()> 7 && s.length() <= 10)) {
-                    textFieldCedula.setError("Cantidad insuficiente de caracteres");
+                    textFieldCedula.setError(getString(R.string.insuficiente_caracteres));
                 } else {
                     textFieldCedula.setError(null); // Elimina el mensaje de error
                 }
@@ -178,7 +168,7 @@ public class RegisterActivity extends App {
     private class listenerView implements RegisterView {
         @Override
         public void showRegisterSuccess() {
-            Toast.makeText(getApplicationContext(), "Realizaste un registro exitoso", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getString(R.string.realizaste_un_registro_exitoso), Toast.LENGTH_SHORT).show();
             changeActivity(LoginActivity.class);
         }
 

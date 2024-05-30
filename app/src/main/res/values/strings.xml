@@ -50,4 +50,19 @@
     <string name="enviar_dinero">Enviar Dinero</string>
     <string name="seleccione_el_numero_a_transferir">Seleccione el numero a transferir</string>
     <string name="transferencia">Transferencia</string>
+    <string name="error_monto_500">El campo no puede estar vacío, ser cero o menor a 500 pesos</string>
+    <string name="cantidad_insuficiente">No cuenta con la cantidad suficiente</string>
+    <string name="bienvenido">"Bienvenido: "</string>
+    <string name="balance_2f">Balance: $%,.2f</string>
+    <string name="logout_seleccionado">Logout seleccionado</string>
+    <string name="credenciales_incorrectas">Credenciales incorrectas</string>
+    <string name="login_vacio">El usuario o contraseña estan vacio</string>
+    <string name="traslado_dinero">Traslado Dinero</string>
+    <string name="resecci_n_dinero">Resección Dinero</string>
+    <string name="error_al_vizualizar_informacion">Error al vizualizar información</string>
+    <string name="error_correo_formato">Formato de correo electrónico inválido</string>
+    <string name="error_pass_coinciden">Las contraseñas no coinciden.</string>
+    <string name="insuficiente_caracteres">Cantidad insuficiente de caracteres</string>
+    <string name="realizaste_un_registro_exitoso">Realizaste un registro exitoso</string>
+    <string name="error_al_registrar_usuario">Error al registrar usuario</string>
 </resources>
