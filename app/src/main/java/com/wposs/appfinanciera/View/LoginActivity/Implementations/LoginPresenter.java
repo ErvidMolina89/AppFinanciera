@@ -1,7 +1,6 @@
 package com.wposs.appfinanciera.View.LoginActivity.Implementations;
 
 import android.content.Context;
-
 import com.wposs.appfinanciera.R;
 import com.wposs.appfinanciera.View.LoginActivity.Interfaces.ILoginBL;
 import com.wposs.appfinanciera.View.LoginActivity.Interfaces.ILoginPresenter;
@@ -9,9 +8,9 @@ import com.wposs.appfinanciera.View.LoginActivity.Interfaces.LoginListener;
 import com.wposs.appfinanciera.View.LoginActivity.Interfaces.LoginView;
 
 public class LoginPresenter implements ILoginPresenter {
-    private LoginView view;
-    private ILoginBL loginBL;
-    private Context context;
+    private final LoginView view;
+    private final ILoginBL loginBL;
+    private final Context context;
 
     public LoginPresenter(LoginView view, Context context) {
         this.view = view;

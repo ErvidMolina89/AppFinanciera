@@ -229,11 +229,11 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
 
                     updateAmountUsers(db,fromBalance, userId);
                     updateAmountUsers(db,toBalance, toUserId);
-                    insertTransaction(db, mess, amount, dateTransaction(), userId, toUserId);
+                    boolean result = insertTransaction(db, mess, amount, dateTransaction(), userId, toUserId);
 
                     // Commit transaction
                     db.setTransactionSuccessful();
-                    return true;
+                    return result;
                 }
             }
         } catch (Exception e) {

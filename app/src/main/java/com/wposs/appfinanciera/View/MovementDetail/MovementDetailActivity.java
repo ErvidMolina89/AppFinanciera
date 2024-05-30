@@ -2,7 +2,6 @@ package com.wposs.appfinanciera.View.MovementDetail;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -40,12 +39,7 @@ public class MovementDetailActivity extends App {
         // Recuperar el objeto Transaction
         transaction = intent.getParcelableExtra("transaction");
         completeTransactionData();
-        imageViewReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        imageViewReturn.setOnClickListener(v -> onBackPressed());
     }
 
     private void completeTransactionData(){

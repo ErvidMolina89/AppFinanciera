@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -22,13 +21,12 @@ import com.wposs.appfinanciera.Models.Transaction;
 import com.wposs.appfinanciera.R;
 import com.wposs.appfinanciera.View.HomeActivity.Implementations.MainActivity;
 import com.wposs.appfinanciera.View.TransfersActivity.Interfaces.ITransferView;
-
 import java.util.List;
+import java.util.Objects;
 
 public class TransferActivity extends App {
     private TransferPresenter presenter;
     private Spinner spnReceivers;
-    private ImageView imageViewReturn;
     private TextInputEditText etAmountTransfer, etMess;
     private TextInputLayout tfAmountTransfer;
     private TextView amountAvailableTextView;
@@ -50,7 +48,7 @@ public class TransferActivity extends App {
         etMess = findViewById(R.id.etMess);
         amountAvailableTextView = findViewById(R.id.amountAvailableTextView);
         btnSend = findViewById(R.id.btnSend);
-        imageViewReturn = findViewById(R.id.imageViewReturnTransfer);
+        ImageView imageViewReturn = findViewById(R.id.imageViewReturnTransfer);
 
         transaction = new Transaction();
 
@@ -62,12 +60,7 @@ public class TransferActivity extends App {
         btnSend.setEnabled(false);
         btnSend.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorGrayText)));
         validateAmountIsLessOrEqualToDeposit();
-        imageViewReturn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        imageViewReturn.setOnClickListener(v -> onBackPressed());
     }
 
     private void validateAmountIsLessOrEqualToDeposit(){
@@ -84,24 +77,21 @@ public class TransferActivity extends App {
                 if(input.isEmpty() || input.equals("0") || Double.parseDouble(input) <= 500 ) {
                     tfAmountTransfer.setError(getString(R.string.error_monto_500));
                 }else {
-                    btnSend.setEnabled((Double.parseDouble(input.toString()) <= amountDeposit));
-                    btnSend.setBackgroundTintList(ColorStateList.valueOf((Double.parseDouble(input.toString()) <= amountDeposit) ? getResources().getColor(R.color.colorAccent):getResources().getColor(R.color.colorGrayText)));
-                    tfAmountTransfer.setError(!(Double.parseDouble(input.toString()) <= amountDeposit) ? getString(R.string.cantidad_insuficiente) : null);
+                    btnSend.setEnabled((Double.parseDouble(input) <= amountDeposit));
+                    btnSend.setBackgroundTintList(ColorStateList.valueOf((Double.parseDouble(input) <= amountDeposit) ? getResources().getColor(R.color.colorAccent):getResources().getColor(R.color.colorGrayText)));
+                    tfAmountTransfer.setError(!(Double.parseDouble(input) <= amountDeposit) ? getString(R.string.cantidad_insuficiente) : null);
                 }
             }
         });
     }
 
     private void listenerButtonSent(){
-        btnSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                 String amount = etAmountTransfer.getText().toString();
-                transaction.setAmount(Double.parseDouble(amount.startsWith("0")? amount.replace("^0+", ""):amount));
-                transaction.setDescription(etMess.getText().toString());
-                transaction.setUserId(sessionManager.getUserDetails().getId());
-                presenter.sendTransfer(transaction);
-            }
+        btnSend.setOnClickListener(v -> {
+             String amount = Objects.requireNonNull(etAmountTransfer.getText()).toString();
+            transaction.setAmount(Double.parseDouble(amount.startsWith("0")? amount.replace("^0+", ""):amount));
+            transaction.setDescription(Objects.requireNonNull(etMess.getText()).toString());
+            transaction.setUserId(sessionManager.getUserDetails().getId());
+            presenter.sendTransfer(transaction);
         });
     }
 

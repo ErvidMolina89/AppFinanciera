@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.widget.Toolbar;
@@ -92,12 +91,7 @@ public class MainActivity extends App {
     }
 
     private void callFloatinActionButton(){
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeActivity(TransferActivity.class);
-            }
-        });
+        fab.setOnClickListener(v -> changeActivity(TransferActivity.class));
     }
 
     private class listenerMainView implements IMainView {

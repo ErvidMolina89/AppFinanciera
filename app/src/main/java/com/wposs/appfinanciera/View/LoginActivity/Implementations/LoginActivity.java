@@ -33,12 +33,7 @@ public class LoginActivity extends App {
             presenter.login(phone, password);
         });
 
-        newAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                changeActivity(RegisterActivity.class);
-            }
-        });
+        newAccount.setOnClickListener(v -> changeActivity(RegisterActivity.class));
     }
 
     private class listenerLoginView implements LoginView {

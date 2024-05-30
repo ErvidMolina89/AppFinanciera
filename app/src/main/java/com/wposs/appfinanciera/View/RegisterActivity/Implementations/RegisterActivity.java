@@ -2,14 +2,11 @@ package com.wposs.appfinanciera.View.RegisterActivity.Implementations;
 
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.google.android.material.textfield.TextInputLayout;
 import com.wposs.appfinanciera.Base.App;
 import com.wposs.appfinanciera.Models.UserModel;
@@ -20,7 +17,6 @@ import com.wposs.appfinanciera.View.RegisterActivity.Interfaces.RegisterView;
 
 public class RegisterActivity extends App {
     private RegisterPresenter presenter;
-    private ImageView imageViewAccount;
     private TextInputLayout textFieldEmail, textFieldPhone, textFieldPass, textFieldCedula, textFieldConfirmPass;
     private EditText nameEditText, emailEditText, phoneEditText, cedulaEditText, passEditText, confirmPassEditText;
     private static final double INITIAL_BALANCE = 3000000.0;
@@ -42,19 +38,14 @@ public class RegisterActivity extends App {
         textFieldCedula = findViewById(R.id.textField_id);
         passEditText = findViewById(R.id.createPassEditText);
         confirmPassEditText = findViewById(R.id.confirmPassEditText);
-        imageViewAccount = findViewById(R.id.imageViewReturnAccount);
+        ImageView imageViewAccount = findViewById(R.id.imageViewReturnAccount);
 
         onClickRegisterButton();
         validateEmailFormat();
         validatePhoneNumberCharacters();
         validateSizePassCharacters();
         validateIdentificationNumberCharacters();
-        imageViewAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        imageViewAccount.setOnClickListener(v -> onBackPressed());
     }
 
     private void onClickRegisterButton(){

@@ -10,10 +10,10 @@ import com.wposs.appfinanciera.View.LoginActivity.Interfaces.ILoginBL;
 import com.wposs.appfinanciera.View.LoginActivity.Interfaces.LoginListener;
 
 public class LoginBL implements ILoginBL {
-    private DatabaseHelper db;
-    private LoginListener listener;
-    private SessionManager sessionManager;
-    private Context context;
+    private final DatabaseHelper db;
+    private final LoginListener listener;
+    private final SessionManager sessionManager;
+    private final Context context;
 
     public LoginBL(LoginListener listener, Context context){
         this.listener = listener;
@@ -28,8 +28,6 @@ public class LoginBL implements ILoginBL {
         if (user != null) {
             sessionManager.createLoginSession(user.getAmount(), user.getName(), user.getPhone(), user.getId());
             listener.showLoginSuccess();
-        } else {
-            listener.showLoginError(context.getString(R.string.credenciales_incorrectas));
-        }
+        } else listener.showLoginError(context.getString(R.string.credenciales_incorrectas));
     }
 }
