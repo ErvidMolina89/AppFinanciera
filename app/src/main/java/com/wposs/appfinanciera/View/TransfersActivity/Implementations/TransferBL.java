@@ -29,7 +29,7 @@ public class TransferBL implements ITransferBL {
     @Override
     public void sendTransfer(Transaction transaction) {
         if (db.sendMoney(transaction.getUserId(),
-                transaction.getPhoneTransaction(),
+                transaction.getFromUserPhone(),
                 transaction.getAmount(),
                 transaction.getDescription())) {
             listener.showTransferSuccess();

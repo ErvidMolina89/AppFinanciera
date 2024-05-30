@@ -1,6 +1,7 @@
 package com.wposs.appfinanciera.View.TransfersActivity.Implementations;
 
 import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,14 +22,13 @@ import com.wposs.appfinanciera.Models.Transaction;
 import com.wposs.appfinanciera.R;
 import com.wposs.appfinanciera.View.HomeActivity.Implementations.MainActivity;
 import com.wposs.appfinanciera.View.TransfersActivity.Interfaces.ITransferView;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
+
 import java.util.List;
 
 public class TransferActivity extends App {
     private TransferPresenter presenter;
     private Spinner spnReceivers;
+    private ImageView imageViewReturn;
     private TextInputEditText etAmountTransfer, etMess;
     private TextInputLayout tfAmountTransfer;
     private TextView amountAvailableTextView;
@@ -49,6 +50,7 @@ public class TransferActivity extends App {
         etMess = findViewById(R.id.etMess);
         amountAvailableTextView = findViewById(R.id.amountAvailableTextView);
         btnSend = findViewById(R.id.btnSend);
+        imageViewReturn = findViewById(R.id.imageViewReturnTransfer);
 
         transaction = new Transaction();
 
@@ -58,7 +60,14 @@ public class TransferActivity extends App {
 
         listenerButtonSent();
         btnSend.setEnabled(false);
+        btnSend.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorGrayText)));
         validateAmountIsLessOrEqualToDeposit();
+        imageViewReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     private void validateAmountIsLessOrEqualToDeposit(){
@@ -71,8 +80,14 @@ public class TransferActivity extends App {
 
             @Override
             public void afterTextChanged(Editable s) {
-                btnSend.setEnabled((Double.parseDouble(s.toString()) <= amountDeposit));
-                tfAmountTransfer.setError(!(Double.parseDouble(s.toString()) <= amountDeposit)? "No cuenta con la cantidad suficiente": null);
+                String input = s.toString().trim();
+                if((input.isEmpty()) || (input.equals("0"))) {
+                    tfAmountTransfer.setError("El campo no puede estar vacío o ser cero");
+                }else {
+                    btnSend.setEnabled((Double.parseDouble(input.toString()) <= amountDeposit));
+                    btnSend.setBackgroundTintList(ColorStateList.valueOf((Double.parseDouble(input.toString()) <= amountDeposit) ? getResources().getColor(R.color.colorAccent):getResources().getColor(R.color.colorGrayText)));
+                    tfAmountTransfer.setError(!(Double.parseDouble(input.toString()) <= amountDeposit) ? "No cuenta con la cantidad suficiente" : null);
+                }
             }
         });
     }
@@ -81,7 +96,8 @@ public class TransferActivity extends App {
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                transaction.setAmount(Double.parseDouble(etAmountTransfer.getText().toString()));
+                 String amount = etAmountTransfer.getText().toString();
+                transaction.setAmount(Double.parseDouble(amount.startsWith("0")? amount.replace("^0+", ""):amount));
                 transaction.setDescription(etMess.getText().toString());
                 transaction.setUserId(sessionManager.getUserDetails().getId());
                 presenter.sendTransfer(transaction);
@@ -102,7 +118,7 @@ public class TransferActivity extends App {
                 String selectedItem = parent.getItemAtPosition(position).toString();
                 // Mostrar el elemento seleccionado
                 Toast.makeText(getApplicationContext(), "Selected: " + selectedItem, Toast.LENGTH_SHORT).show();
-                transaction.setPhoneTransaction(selectedItem);
+                transaction.setFromUserPhone(selectedItem);
             }
 
             @Override

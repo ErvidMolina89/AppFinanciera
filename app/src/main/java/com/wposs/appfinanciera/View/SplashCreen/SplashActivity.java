@@ -35,7 +35,7 @@ public class SplashActivity extends App {
                 // valido la sesión del usuario
                 SessionManager sessionManager = new SessionManager(getApplicationContext());
                 if (sessionManager.isLoggedIn()) {
-                    changeActivity(TransferActivity.class);
+                    changeActivity(MainActivity.class);
                 } else {
                     changeActivity(LoginActivity.class);
                 }

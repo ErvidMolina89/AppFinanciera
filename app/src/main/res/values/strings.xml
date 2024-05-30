@@ -49,4 +49,5 @@
     <string name="cantidad_disponible">Cantidad Disponible</string>
     <string name="enviar_dinero">Enviar Dinero</string>
     <string name="seleccione_el_numero_a_transferir">Seleccione el numero a transferir</string>
+    <string name="transferencia">Transferencia</string>
 </resources>

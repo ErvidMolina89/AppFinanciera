@@ -45,7 +45,7 @@ public class SessionManager {
     }
 
     public void saveUserAmount(double amount) {
-        editor.putLong(KEY_AMOUNT, Double.doubleToRawLongBits(amount));
+        editor.putFloat(KEY_AMOUNT, (float) amount);
         editor.apply();
     }
 

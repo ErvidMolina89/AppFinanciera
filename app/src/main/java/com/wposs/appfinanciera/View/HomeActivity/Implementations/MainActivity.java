@@ -4,42 +4,55 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.wposs.appfinanciera.Base.App;
 import com.wposs.appfinanciera.DataAcccess.SharedPreferences.SessionManager;
 import com.wposs.appfinanciera.Models.Transaction;
 import com.wposs.appfinanciera.Models.UserModel;
 import com.wposs.appfinanciera.R;
+import com.wposs.appfinanciera.View.HomeActivity.Interfaces.IMainView;
 import com.wposs.appfinanciera.View.HomeActivity.Interfaces.ITransationAdapterListener;
 import com.wposs.appfinanciera.View.LoginActivity.Implementations.LoginActivity;
 import com.wposs.appfinanciera.View.MovementDetail.MovementDetailActivity;
-
+import com.wposs.appfinanciera.View.TransfersActivity.Implementations.TransferActivity;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends App {
     private SessionManager sessionManager;
     private RecyclerView transactionsRecyclerView;
     private TransactionsAdapter transactionsAdapter;
-    private ArrayList<Transaction> transactionList;
-    private static final double INITIAL_BALANCE = 3000000.0;
+    private FloatingActionButton fab;
 
     @SuppressLint("DefaultLocale")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        TextView accountBalanceTextView = findViewById(R.id.accountBalanceTextView);
         transactionsRecyclerView = findViewById(R.id.transactionsRecyclerView);
+        fab = findViewById(R.id.floating_action_button);
+        MainPresenter presenter = new MainPresenter(new listenerMainView(), getApplicationContext());
+
+        sessionManager = new SessionManager(getApplicationContext());
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        displaySesion();
+        callRecyclerView();
+        callFloatinActionButton();
+        presenter.getAllTransferSuccess(sessionManager.getUserDetails().getId());
+    }
+
+    @SuppressLint("DefaultLocale")
+    private void displaySesion(){
+        TextView accountBalanceTextView = findViewById(R.id.accountBalanceTextView);
         // valido la sesión
-        sessionManager = new SessionManager(getApplicationContext());
         if (!sessionManager.isLoggedIn()) changeActivity(LoginActivity.class);
         UserModel user = sessionManager.getUserDetails();
         // Establecer el título y el icono
@@ -47,20 +60,7 @@ public class MainActivity extends App {
 
         // Set initial account balance
         accountBalanceTextView.setText(String.format("Balance: $%,.2f", user.getAmount()));
-
-        callRecyclerView();
-//        loadDummyTransactions();
     }
-
-//    @SuppressLint("NotifyDataSetChanged")
-//    private void loadDummyTransactions() {
-//        // Add some dummy transactions to the list
-//        transactionList.add(new Transaction("Compra en supermercado", 50000, "29/05/2024 10:30:00", 1));
-//        transactionList.add(new Transaction("Pago de servicios", 200000, "29/05/2024 12:30:00",1));
-//        transactionList.add(new Transaction("Depósito", 100000, "29/05/2024 10:40:00",2));
-//
-//        transactionsAdapter.updateList(transactionList);
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -84,12 +84,33 @@ public class MainActivity extends App {
     }
 
     private void callRecyclerView(){
-        transactionList = new ArrayList<>();
         transactionsRecyclerView.setAdapter(null);
         transactionsRecyclerView.setHasFixedSize(true);
         transactionsRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        transactionsAdapter = new TransactionsAdapter(transactionList, new listenerAdapter(), getApplicationContext());
+        transactionsAdapter = new TransactionsAdapter(new ArrayList<>(), new listenerAdapter(), getApplicationContext());
         transactionsRecyclerView.setAdapter(transactionsAdapter);
+    }
+
+    private void callFloatinActionButton(){
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeActivity(TransferActivity.class);
+            }
+        });
+    }
+
+    private class listenerMainView implements IMainView {
+
+        @Override
+        public void showGetAllTransferSuccess(List<Transaction> transactions) {
+            transactionsAdapter.updateList(transactions);
+        }
+
+        @Override
+        public void showMainError(String message) {
+            showErrorDialog(message);
+        }
     }
 
     private class listenerAdapter implements ITransationAdapterListener {

@@ -14,34 +14,34 @@
         tools:targetApi="31">
         <activity
             android:name=".View.TransfersActivity.Implementations.TransferActivity"
-            android:exported="true">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-        </activity>
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".View.MovementDetail.MovementDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".View.RegisterActivity.Implementations.RegisterActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".View.LoginActivity.Implementations.LoginActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".View.HomeActivity.Implementations.MainActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".View.SplashCreen.SplashActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".View.HomeActivity.Implementations.MainActivity"
-            android:exported="false" />
     </application>
 
 </manifest>

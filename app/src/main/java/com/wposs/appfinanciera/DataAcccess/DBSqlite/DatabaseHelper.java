@@ -132,7 +132,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
         db.insert(TABLE_USERS, null, values);
     }
 
-    //registrar Usuario
     public boolean registerUser(UserModel user) throws PhoneNumberExistsException {
         try (SQLiteDatabase db = this.getWritableDatabase()) {
             if (isPhoneNumberExists(db, user.getPhone())) {
@@ -235,21 +234,11 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
                     fromBalance -= amount;
                     toBalance += amount;
 
-                    SessionManager sessionManager = new SessionManager(context);
-                    sessionManager.saveUserAmount(fromBalance);
+                    sesionAmount(fromBalance);
 
-                    ContentValues fromValues = new ContentValues();
-                    fromValues.put(COLUMN_AMOUNT, fromBalance);
-                    db.update(TABLE_USERS, fromValues, COLUMN_USER_ID + "=?", new String[]{String.valueOf(userId)});
-
-                    ContentValues toValues = new ContentValues();
-                    toValues.put(COLUMN_AMOUNT, toBalance);
-                    db.update(TABLE_USERS, toValues, COLUMN_USER_ID + "=?", new String[]{String.valueOf(toUserId)});
-
-                    long currentTime = System.currentTimeMillis();
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-                    String date = sdf.format(new Date(currentTime));
-                    insertTransaction(db, mess, roundAmount(amount), date, userId, toUserId);
+                    updateAmountUsers(db,fromBalance, userId);
+                    updateAmountUsers(db,toBalance, toUserId);
+                    insertTransaction(db, mess, amount, dateTransaction(), userId, toUserId);
 
                     // Commit transaction
                     db.setTransactionSuccessful();
@@ -265,7 +254,23 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
         return false;
     }
 
-    // Insert a transaction
+    private void updateAmountUsers(SQLiteDatabase db, Double amountUpdate, int userId){
+        ContentValues toValues = new ContentValues();
+        toValues.put(COLUMN_AMOUNT, amountUpdate);
+        db.update(TABLE_USERS, toValues, COLUMN_USER_ID + "=?", new String[]{String.valueOf(userId)});
+    }
+
+    private void sesionAmount(Double amount){
+        SessionManager sessionManager = new SessionManager(context);
+        sessionManager.saveUserAmount(amount);
+    }
+
+    private String dateTransaction(){
+        long currentTime = System.currentTimeMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return sdf.format(new Date(currentTime));
+    }
+
     public boolean insertTransaction(SQLiteDatabase db, String description, double amount, String date, int userId, int fromUserId) {
 
         ContentValues values = new ContentValues();
@@ -277,6 +282,62 @@ public class DatabaseHelper extends SQLiteOpenHelper implements AutoCloseable {
 
         long result = db.insert(TABLE_TRANSACTIONS, null, values);
         return result != -1;
+    }
+
+    public List<Transaction> getUserTransactions(int userId) {
+        List<Transaction> transactionList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = querySQLTransactions();
+
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(userId), String.valueOf(userId), String.valueOf(userId)});
+
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                transactionList.add(fillTransactionModel(cursor));
+            } while (cursor.moveToNext());
+            cursor.close();
+        }
+        db.close();
+        return transactionList;
+    }
+    private String querySQLTransactions(){
+        return "SELECT " +
+                "t.id, " +
+                "t.description, " +
+                "t.value, " +
+                "t.date, " +
+                "t.from_user_id, " +
+                "t.user_id, " +
+                "u_from.name AS from_user_name, " +
+                "u_from.phone AS from_user_phone, " +
+                "u_to.name AS to_user_name, " +
+                "u_to.phone AS to_user_phone, " +
+                "CASE " +
+                "WHEN t.from_user_id = ? THEN 2 " +
+                "ELSE 1 " +
+                "END AS type " +
+                "FROM transactions t " +
+                "LEFT JOIN users u_from ON t.from_user_id = u_from.id " +
+                "LEFT JOIN users u_to ON t.user_id = u_to.id " +
+                "WHERE t.from_user_id = ? OR t.user_id = ? " +
+                "ORDER BY t.date DESC";
+    }
+
+    @SuppressLint("Range")
+    private Transaction fillTransactionModel(Cursor cursor){
+        Transaction transaction = new Transaction();
+        transaction.setId(cursor.getInt(cursor.getColumnIndex("id")));
+        transaction.setDescription(cursor.getString(cursor.getColumnIndex("description")));
+        transaction.setAmount(cursor.getDouble(cursor.getColumnIndex("value")));
+        transaction.setDate(cursor.getString(cursor.getColumnIndex("date")));
+        transaction.setFromUserId(cursor.getInt(cursor.getColumnIndex("from_user_id")));
+        transaction.setUserId(cursor.getInt(cursor.getColumnIndex("user_id")));
+        transaction.setFromUserName(cursor.getString(cursor.getColumnIndex("from_user_name")));
+        transaction.setFromUserPhone(cursor.getString(cursor.getColumnIndex("from_user_phone")));
+        transaction.setToUserName(cursor.getString(cursor.getColumnIndex("to_user_name")));
+        transaction.setToUserPhone(cursor.getString(cursor.getColumnIndex("to_user_phone")));
+        transaction.setType(cursor.getInt(cursor.getColumnIndex("type")));
+        return transaction;
     }
 
     @Override

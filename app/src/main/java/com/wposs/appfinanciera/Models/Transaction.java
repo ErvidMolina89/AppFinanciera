@@ -11,10 +11,55 @@ public class Transaction implements Parcelable {
     private String date;
     private int userId;
     private int fromUserId;
-    private String nameUserTransaction;
-    private String phoneTransaction;
+    private String fromUserName;
+    private String fromUserPhone;
+    private String toUserName;
+    private String toUserPhone;
 
-    public Transaction() {
+    public Transaction() {}
+
+    // Métodos Parcelable
+    protected Transaction(Parcel in) {
+        id = in.readInt();
+        type = in.readInt();
+        description = in.readString();
+        amount = in.readDouble();
+        date = in.readString();
+        userId = in.readInt();
+        fromUserId = in.readInt();
+        fromUserName = in.readString();
+        fromUserPhone = in.readString();
+        toUserName = in.readString();
+        toUserPhone = in.readString();
+    }
+    public static final Creator<Transaction> CREATOR = new Creator<Transaction>() {
+        @Override
+        public Transaction createFromParcel(Parcel in) {
+            return new Transaction(in);
+        }
+
+        @Override
+        public Transaction[] newArray(int size) {
+            return new Transaction[size];
+        }
+    };
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeInt(type);
+        dest.writeString(description);
+        dest.writeDouble(amount);
+        dest.writeString(date);
+        dest.writeInt(userId);
+        dest.writeInt(fromUserId);
+        dest.writeString(fromUserName);
+        dest.writeString(fromUserPhone);
+        dest.writeString(toUserName);
+        dest.writeString(toUserPhone);
     }
 
     public int getId() {
@@ -65,10 +110,6 @@ public class Transaction implements Parcelable {
         this.userId = userId;
     }
 
-    public String getNameUserTransaction() {
-        return nameUserTransaction;
-    }
-
     public int getFromUserId() {
         return fromUserId;
     }
@@ -77,55 +118,35 @@ public class Transaction implements Parcelable {
         this.fromUserId = fromUserId;
     }
 
-    public String getPhoneTransaction() {
-        return phoneTransaction;
+    public String getFromUserName() {
+        return fromUserName;
     }
 
-    public void setPhoneTransaction(String phoneTransaction) {
-        this.phoneTransaction = phoneTransaction;
+    public void setFromUserName(String fromUserName) {
+        this.fromUserName = fromUserName;
     }
 
-    // Métodos Parcelable
-    protected Transaction(Parcel in) {
-        id = in.readInt();
-        type = in.readInt();
-        description = in.readString();
-        amount = in.readDouble();
-        date = in.readString();
-        userId = in.readInt();
-        fromUserId = in.readInt();
-        nameUserTransaction = in.readString();
-        phoneTransaction = in.readString();
+    public String getFromUserPhone() {
+        return fromUserPhone;
     }
 
-    public static final Creator<Transaction> CREATOR = new Creator<Transaction>() {
-        @Override
-        public Transaction createFromParcel(Parcel in) {
-            return new Transaction(in);
-        }
-
-        @Override
-        public Transaction[] newArray(int size) {
-            return new Transaction[size];
-        }
-    };
-
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public void setFromUserPhone(String fromUserPhone) {
+        this.fromUserPhone = fromUserPhone;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeInt(type);
-        dest.writeString(description);
-        dest.writeDouble(amount);
-        dest.writeString(date);
-        dest.writeInt(userId);
-        dest.writeInt(fromUserId);
-        dest.writeString(nameUserTransaction);
-        dest.writeString(phoneTransaction);
+    public String getToUserName() {
+        return toUserName;
+    }
+
+    public void setToUserName(String toUserName) {
+        this.toUserName = toUserName;
+    }
+
+    public String getToUserPhone() {
+        return toUserPhone;
+    }
+
+    public void setToUserPhone(String toUserPhone) {
+        this.toUserPhone = toUserPhone;
     }
 }

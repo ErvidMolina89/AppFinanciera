@@ -21,17 +21,24 @@
             app:tint="@color/colorPrimaryDark" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="2">
+
+            <TextView
+                android:id="@+id/nameItemTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/_14sp"
+                android:textStyle="bold"
+                android:text="@string/name"/>
 
             <TextView
                 android:id="@+id/descriptionItemTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/_14sp"
-                android:textStyle="bold"
                 android:text="@string/transaction_description"/>
 
             <TextView

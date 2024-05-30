@@ -15,23 +15,38 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center_horizontal"
-            android:layout_marginTop="@dimen/_50dp"
+            android:layout_marginTop="@dimen/_16dp"
             android:layout_marginLeft="@dimen/_16dp"
             android:layout_marginRight="@dimen/_16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/textTitle"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:textSize="@dimen/_35sp"
-                android:fontFamily="monospace"
-                android:text="@string/create_account"
-                android:textColor="@color/colorPrimaryDark"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:gravity="center">
+                <ImageView
+                    android:id="@+id/imageViewReturnAccount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/ic_return"
+                    android:tint="@color/colorPrimaryDark"
+                    android:padding="@dimen/_8dp"
+                    tools:ignore="UseAppTint" />
+
+                <TextView
+                    android:id="@+id/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="@dimen/_35sp"
+                    android:fontFamily="monospace"
+                    android:text="@string/create_account"
+                    android:textColor="@color/colorPrimaryDark"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textSplash"
@@ -70,6 +85,7 @@
                 android:textColorHint="@color/colorAccent"
                 android:textStyle="bold"
                 android:paddingTop="@dimen/_8dp"
+                android:maxLength="40"
                 android:paddingBottom="@dimen/_8dp"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -139,7 +155,8 @@
                 android:id="@+id/cedulaEditText"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_65dp"
-                android:inputType="text"/>
+                android:maxLength="10"
+                android:inputType="phone"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -162,6 +179,7 @@
                 android:id="@+id/createPassEditText"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_65dp"
+                android:maxLength="8"
                 android:inputType="textPassword"/>
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -185,6 +203,7 @@
                 android:id="@+id/confirmPassEditText"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_65dp"
+                android:maxLength="8"
                 android:inputType="textPassword"/>
 
         </com.google.android.material.textfield.TextInputLayout>

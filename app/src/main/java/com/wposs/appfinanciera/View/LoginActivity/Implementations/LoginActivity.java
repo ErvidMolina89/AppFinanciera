@@ -48,6 +48,7 @@ public class LoginActivity extends App {
         @Override
         public void showLoginSuccess() {
             changeActivity(MainActivity.class);
+            finish();
         }
 
         @Override

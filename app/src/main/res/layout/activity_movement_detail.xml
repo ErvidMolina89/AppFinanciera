@@ -8,17 +8,35 @@
     android:padding="@dimen/_16dp"
     tools:context=".View.MovementDetail.MovementDetailActivity">
 
-    <TextView
-        android:id="@+id/titleDetailTextView"
+    <LinearLayout
+        android:id="@+id/containerTitleDetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/detalle_del_movimiento"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/_40sp"
-        android:textStyle="bold"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/_16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+        <ImageView
+            android:id="@+id/imageViewReturnDeatil"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_return"
+            android:tint="@color/colorPrimaryDark"
+            android:padding="@dimen/_16dp"
+            tools:ignore="UseAppTint" />
+
+        <TextView
+            android:id="@+id/titleDetailTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/detalle_del_movimiento"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/_40sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/containerSubTitleDetail"
@@ -28,7 +46,7 @@
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/titleDetailTextView">
+        app:layout_constraintTop_toBottomOf="@+id/containerTitleDetail">
 
 
         <ImageView

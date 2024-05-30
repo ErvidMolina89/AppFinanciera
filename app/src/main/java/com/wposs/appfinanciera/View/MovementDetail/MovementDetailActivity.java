@@ -4,15 +4,18 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.wposs.appfinanciera.Base.App;
 import com.wposs.appfinanciera.Models.Transaction;
 import com.wposs.appfinanciera.R;
+import com.wposs.appfinanciera.Utils.DateFormatType;
+import com.wposs.appfinanciera.Utils.DateUtils;
 
 public class MovementDetailActivity extends App {
     private TextView userTextView, sentToTextView, amountTextView, dateTextView, descriptionTextView, phoneToTextView;
-    private ImageView imageViewDetail;
+    private ImageView imageViewDetail, imageViewReturn;
     private Transaction transaction;
 
     @SuppressLint("MissingInflatedId")
@@ -23,6 +26,7 @@ public class MovementDetailActivity extends App {
 
         userTextView = findViewById(R.id.userDetailTextView);
         imageViewDetail = findViewById(R.id.imageViewDetail);
+        imageViewReturn = findViewById(R.id.imageViewReturnDeatil);
         amountTextView = findViewById(R.id.amountTextView);
         sentToTextView = findViewById(R.id.sentToTextView);
         amountTextView = findViewById(R.id.amountTextView);
@@ -36,6 +40,12 @@ public class MovementDetailActivity extends App {
         // Recuperar el objeto Transaction
         transaction = intent.getParcelableExtra("transaction");
         completeTransactionData();
+        imageViewReturn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     private void completeTransactionData(){
@@ -43,10 +53,10 @@ public class MovementDetailActivity extends App {
             userTextView.setText(transaction.getType() == 1 ? "Traslado Dinero" : "Resección Dinero");
             userTextView.setTextColor(transaction.getType() == 1 ? getResources().getColor(R.color.red) : getResources().getColor(R.color.colorAccent));
             imageViewDetail.setColorFilter(transaction.getType() == 1 ? getResources().getColor(R.color.red) : getResources().getColor(R.color.colorAccent));
-            sentToTextView.setText(String.valueOf(transaction.getNameUserTransaction()));
-            phoneToTextView.setText(String.valueOf(transaction.getPhoneTransaction()));
+            sentToTextView.setText((transaction.getType() == 1)?transaction.getFromUserName():transaction.getToUserName());
+            phoneToTextView.setText((transaction.getType() == 1)?transaction.getFromUserPhone(): transaction.getToUserPhone());
             amountTextView.setText(String.valueOf(transaction.getAmount()));
-            dateTextView.setText(transaction.getDate());
+            dateTextView.setText(DateUtils.formatDateString(transaction.getDate(), DateFormatType.FORMAT_2));
             descriptionTextView.setText(transaction.getDescription());
         }else showErrorDialog("Error al vizualizar información");
     }

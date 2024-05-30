@@ -7,29 +7,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import com.wposs.appfinanciera.Models.Transaction;
 import com.wposs.appfinanciera.R;
+import com.wposs.appfinanciera.Utils.DateFormatType;
+import com.wposs.appfinanciera.Utils.DateUtils;
 import com.wposs.appfinanciera.View.HomeActivity.Interfaces.ITransationAdapterListener;
-
-import java.util.ArrayList;
+import java.util.List;
 
 public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapter.ViewHolder> {
-    private ArrayList<Transaction> transactions;
+    private List<Transaction> transactions;
     private final Context context;
     private final ITransationAdapterListener listener;
 
 
     // Método para actualizar la lista de canciones
     @SuppressLint("NotifyDataSetChanged")
-    public void updateList(ArrayList<Transaction> newTransactions) {
+    public void updateList(List<Transaction> newTransactions) {
         this.transactions = newTransactions;
         notifyDataSetChanged();
     }
 
-    public TransactionsAdapter(ArrayList<Transaction> transactions, ITransationAdapterListener listener, Context context) {
+    public TransactionsAdapter(List<Transaction> transactions, ITransationAdapterListener listener, Context context) {
         this.transactions = transactions;
         this.listener = listener;
         this.context = context;
@@ -58,15 +58,14 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView descriptionTextView;
-        private final TextView amountTextView;
-        private final TextView dateTextView;
+        private final TextView nameTextView, descriptionTextView, amountTextView, dateTextView;
         private final LinearLayout containerItemDetail;
         private final ITransationAdapterListener mListener;
 
         public ViewHolder(View itemView, ITransationAdapterListener listener) {
             super(itemView);
             mListener = listener;
+            nameTextView = itemView.findViewById(R.id.nameItemTextView);
             descriptionTextView = itemView.findViewById(R.id.descriptionItemTextView);
             amountTextView = itemView.findViewById(R.id.amountTextView);
             dateTextView = itemView.findViewById(R.id.dateTextView);
@@ -74,12 +73,11 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
         }
         @SuppressLint({"DefaultLocale", "ResourceAsColor"})
         public void setDetailTransation(Transaction transaction, Context context){
-            descriptionTextView.setText(transaction.getDescription());
+            nameTextView.setText((transaction.getType() == 1)?transaction.getFromUserName():transaction.getToUserName());
+            descriptionTextView.setText((transaction.getType() == 1)?transaction.getFromUserPhone(): transaction.getToUserPhone());
             amountTextView.setText(String.format("$%,.2f", transaction.getAmount()));
-            dateTextView.setText(transaction.getDate());
-            if (transaction.getType() == 2){
-                amountTextView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
-            }
+            dateTextView.setText(DateUtils.formatDateString(transaction.getDate(), DateFormatType.FORMAT_1));
+            if (transaction.getType() == 2) amountTextView.setTextColor(ContextCompat.getColor(context, R.color.colorAccent));
             containerItemDetail.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

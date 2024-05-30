@@ -9,16 +9,31 @@
     android:padding="@dimen/_16dp"
     tools:context=".View.TransfersActivity.Implementations.TransferActivity">
 
-    <TextView
-        android:id="@+id/tvBalance"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:gravity="center"
-        android:text="@string/transferir_dinero"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="@dimen/_40sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginTop="@dimen/_16dp">
+        <ImageView
+            android:id="@+id/imageViewReturnTransfer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_return"
+            android:tint="@color/colorPrimaryDark"
+            android:padding="@dimen/_8dp"
+            tools:ignore="UseAppTint" />
+
+        <TextView
+            android:id="@+id/tvBalance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/transferir_dinero"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/_40sp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"

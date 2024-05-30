@@ -22,13 +22,11 @@ public class App extends AppCompatActivity {
     public void changeActivity(Class<?> targetActivity) {
         Intent intent = new Intent(this, targetActivity);
         startActivity(intent);
-        finish();
     }
     public void changeActivityPutExtra(Class<?> endActivity, Parcelable object) {
         Intent intent = new Intent(this, endActivity);
         intent.putExtra("transaction", object);
         startActivity(intent);
-        finish();
     }
 
     public void showErrorDialog(String message) {
